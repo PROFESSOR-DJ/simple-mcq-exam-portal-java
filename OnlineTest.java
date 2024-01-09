@@ -4,8 +4,9 @@ import javax.swing.*;
 
 class OnlineTest extends JFrame implements ActionListener {
     JLabel l;
+	
     JRadioButton jb[] = new JRadioButton[5];
-    JButton NEXT, BOOKMARK, PREVIOUS;  // Step 1
+    JButton NEXT, BOOKMARK, PREVIOUS;
     ButtonGroup bg;
     int count = 0, current = 0, x = 1, y = 1, now = 0;
     int m[] = new int[10];
@@ -13,22 +14,26 @@ class OnlineTest extends JFrame implements ActionListener {
     OnlineTest(String s) {
         super(s);
         l = new JLabel();
+		l.setBackground(Color.BLACK);
+		l.setForeground(Color.WHITE);
         add(l);
         bg = new ButtonGroup();
         for (int i = 0; i < 5; i++) {
             jb[i] = new JRadioButton();
             add(jb[i]);
+            jb[i].setBackground(Color.BLACK);
+            jb[i].setForeground(Color.WHITE);
             bg.add(jb[i]);
         }
         NEXT = new JButton("Next");
         BOOKMARK = new JButton("Bookmark");
-        PREVIOUS = new JButton("Previous");  
+        PREVIOUS = new JButton("Previous");
         NEXT.addActionListener(this);
         BOOKMARK.addActionListener(this);
-        PREVIOUS.addActionListener(this);  
+        PREVIOUS.addActionListener(this);
         add(NEXT);
         add(BOOKMARK);
-        add(PREVIOUS);  
+        add(PREVIOUS);
         set();
         l.setBounds(30, 40, 450, 20);
         jb[0].setBounds(50, 80, 100, 20);
@@ -36,13 +41,14 @@ class OnlineTest extends JFrame implements ActionListener {
         jb[2].setBounds(50, 140, 100, 20);
         jb[3].setBounds(50, 170, 100, 20);
         NEXT.setBounds(250, 240, 100, 30);
-        BOOKMARK.setBounds(400, 240, 100, 30);  
-        PREVIOUS.setBounds(100, 240, 100, 30);  
+        BOOKMARK.setBounds(400, 240, 100, 30);
+        PREVIOUS.setBounds(100, 240, 100, 30);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setLocation(250, 100);
         setVisible(true);
         setSize(600, 600);
+        getContentPane().setBackground(Color.BLACK); // Set background color
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -56,7 +62,7 @@ class OnlineTest extends JFrame implements ActionListener {
                 BOOKMARK.setText("Result");
             }
         }
-        if (e.getSource() == PREVIOUS) {  
+        if (e.getSource() == PREVIOUS) {
             if (check())
                 count = count + 1;
             current--;
@@ -129,7 +135,6 @@ class OnlineTest extends JFrame implements ActionListener {
         l.setBounds(30, 40, 450, 20);
         for (int i = 0, j = 0; i <= 90; i += 30, j++)
             jb[j].setBounds(50, 80 + i, 200, 20);
-        // Step 5
         if (current >= 0 && current <= 3 && jb[current].getText().startsWith("Selected: Yes")) {
             jb[current].setSelected(true);
         }
