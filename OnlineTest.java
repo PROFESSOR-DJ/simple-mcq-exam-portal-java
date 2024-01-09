@@ -35,7 +35,7 @@ class OnlineTest extends JFrame implements ActionListener
 		jb[2].setBounds(50,140,100,20);
 		jb[3].setBounds(50,170,100,20);
 		NEXT.setBounds(100,240,100,30);
-		BOOKMARK.setBounds(270,240,100,30);
+		BOOKMARK.setBounds(400,240,100,30);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
 		setLocation(250,100);
@@ -100,23 +100,23 @@ class OnlineTest extends JFrame implements ActionListener
 		jb[4].setSelected(true);
 		if(current==0)
 		{
-			l.setText("");
-			jb[0].setText("");jb[1].setText("");jb[2].setText("");jb[3].setText("");	
+			l.setText("1) Which of the following is a part of Data Science?");
+			jb[0].setText("Data Collection");jb[1].setText("Data Analysis");jb[2].setText("Data Visualization");jb[3].setText("Data Cleaning");	
 		}
 		if(current==1)
 		{
-			l.setText("");
-			jb[0].setText("");jb[1].setText("");jb[2].setText("");jb[3].setText("");
+			l.setText("2) Which action is followed by a data scientist after collecting the data?");
+			jb[0].setText("Data Storage");jb[1].setText("Data Cleaning");jb[2].setText("Data Visualization");jb[3].setText("Data Preprocessing");
 		}
 		if(current==2)
 		{
-			l.setText("");
-			jb[0].setText("");jb[1].setText("");jb[2].setText("");jb[3].setText("");
+			l.setText("3) Which of the following is NOT a data science application?");
+			jb[0].setText("Predicting Stock Prices");jb[1].setText("Image Recognition");jb[2].setText("Generating Random Numbers");jb[3].setText("Fraud Detection");
 		}
 		if(current==3)
 		{
-			l.setText("");
-			jb[0].setText("");jb[1].setText("");jb[2].setText("");jb[3].setText("");
+			l.setText("4) Which model is frequently used as the benchmark for data analysis?");
+			jb[0].setText("Support Vector Machine");jb[1].setText("Decision Tree");jb[2].setText("Linear Regression");jb[3].setText("Random Forest");
 		}
 		l.setBounds(30,40,450,20);
 		for(int i=0,j=0;i<=90;i+=30,j++)
@@ -127,28 +127,17 @@ class OnlineTest extends JFrame implements ActionListener
 		if(current==0)
 			return(jb[1].isSelected());
 		if(current==1)
-			return(jb[2].isSelected());
+			return(jb[3].isSelected());
 		if(current==2)
-			return(jb[3].isSelected());
+			return(jb[2].isSelected());
 		if(current==3)
-			return(jb[0].isSelected());
-		if(current==4)
 			return(jb[2].isSelected());
-		if(current==5)
-			return(jb[2].isSelected());
-		if(current==6)
-			return(jb[1].isSelected());
-		if(current==7)
-			return(jb[3].isSelected());
-		if(current==8)
-			return(jb[1].isSelected());
-		if(current==9)
-			return(jb[2].isSelected());
+		
 		return false;
 	}
 	public static void main(String s[])
 	{
-		new OnlineTest("Online Test Of Java");
+		new OnlineTest("MCQ for Data Science");
 	}
 
 
