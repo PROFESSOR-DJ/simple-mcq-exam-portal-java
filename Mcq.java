@@ -48,7 +48,7 @@ class Mcq extends JFrame implements ActionListener {
         setLocation(250, 100);
         setVisible(true);
         setSize(600, 600);
-        getContentPane().setBackground(Color.BLACK); // Set background color
+        getContentPane().setBackground(Color.BLACK); 
     }
 
     public void actionPerformed(ActionEvent e) {
