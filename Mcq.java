@@ -196,7 +196,7 @@ class Mcq extends JFrame implements ActionListener {
                 count = count + 1;
             current++;
             set();
-            if (current == 9) {
+            if (current == 4) {
                 NEXT.setEnabled(false);
                 BOOKMARK.setText("Result");
                 calculateMarks();
@@ -218,7 +218,7 @@ class Mcq extends JFrame implements ActionListener {
             x++;
             current++;
             set();
-            if (current == 9)
+            if (current == 4)
                 BOOKMARK.setText("Result");
             setVisible(false);
             setVisible(true);
