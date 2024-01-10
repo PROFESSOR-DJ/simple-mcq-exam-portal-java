@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student>
+        <name>DHIRAAJ K V</name>
+        <email>720721104021@hicet.ac.in</email>
+        <password>DJ123</password>
+    </student>
+    <student>
+        <name>Akhil</name>
+        <email>720721104001@hicet.ac.in</email>
+        <password>AK456</password>
+    </student>
+</students>

@@ -1,21 +1,30 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import java.io.File;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
 
 class Mcq extends JFrame implements ActionListener {
     JLabel l;
-	
     JRadioButton jb[] = new JRadioButton[5];
     JButton NEXT, BOOKMARK, PREVIOUS;
     ButtonGroup bg;
     int count = 0, current = 0, x = 1, y = 1, now = 0;
     int m[] = new int[10];
+    private Element rootElement;
+    private String studentName;
+    private String studentEmail;
+    private int marks;
 
-    Mcq(String s) {
+    Mcq(String s, String email) {
         super(s);
         l = new JLabel();
-		l.setBackground(Color.BLACK);
-		l.setForeground(Color.WHITE);
+        l.setBackground(Color.BLACK);
+        l.setForeground(Color.WHITE);
         add(l);
         bg = new ButtonGroup();
         for (int i = 0; i < 5; i++) {
@@ -48,57 +57,82 @@ class Mcq extends JFrame implements ActionListener {
         setLocation(250, 100);
         setVisible(true);
         setSize(600, 600);
-        getContentPane().setBackground(Color.BLACK); 
+        getContentPane().setBackground(Color.BLACK);
+
+        // Retrieve student details based on email
+        retrieveStudentDetails(email);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == NEXT) {
-            if (check())
-                count = count + 1;
-            current++;
-            set();
-            if (current == 9) {
-                NEXT.setEnabled(false);
-                BOOKMARK.setText("Result");
+    private void retrieveStudentDetails(String email) {
+        try {
+            File xmlFile = new File("students.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+
+            doc.getDocumentElement().normalize();
+
+            NodeList nodeList = doc.getElementsByTagName("student");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String storedEmail = element.getElementsByTagName("email").item(0).getTextContent();
+                    if (email.equals(storedEmail)) {
+                        studentName = element.getElementsByTagName("name").item(0).getTextContent();
+                        studentEmail = storedEmail;
+                        break;
+                    }
+                }
             }
+
+            // Initialize rootElement here
+            rootElement = doc.getDocumentElement();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        if (e.getSource() == PREVIOUS) {
-            if (check())
-                count = count + 1;
-            current--;
-            set();
-        }
-        if (e.getActionCommand().equals("Bookmark")) {
-            JButton bk = new JButton("Bookmark" + x);
-            bk.setBounds(480, 20 + 30 * x, 100, 30);
-            add(bk);
-            bk.addActionListener(this);
-            m[x] = current;
-            x++;
-            current++;
-            set();
-            if (current == 9)
-                BOOKMARK.setText("Result");
-            setVisible(false);
-            setVisible(true);
-        }
-        for (int i = 0, y = 1; i < x; i++, y++) {
-            if (e.getActionCommand().equals("Bookmark" + y)) {
-                if (check())
-                    count = count + 1;
-                now = current;
-                current = m[y];
-                set();
-                ((JButton) e.getSource()).setEnabled(false);
-                current = now;
+    }
+
+    private void updateResultInXml() {
+        try {
+            File xmlFile = new File("results.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc;
+
+            if (xmlFile.exists()) {
+                doc = dBuilder.parse(xmlFile);
+                doc.getDocumentElement().normalize();
+            } else {
+                doc = dBuilder.newDocument();
+                Element rootElement = doc.createElement("results");
+                doc.appendChild(rootElement);
             }
-        }
-        if (e.getActionCommand().equals("Result")) {
-            if (check())
-                count = count + 1;
-            current++;
-            JOptionPane.showMessageDialog(this, "correct ans=" + count);
-            System.exit(0);
+
+            Element resultElement = doc.createElement("result");
+            rootElement.appendChild(resultElement);
+
+            Element nameElement = doc.createElement("name");
+            nameElement.appendChild(doc.createTextNode(studentName));
+            resultElement.appendChild(nameElement);
+
+            Element emailElement = doc.createElement("email");
+            emailElement.appendChild(doc.createTextNode(studentEmail));
+            resultElement.appendChild(emailElement);
+
+            Element marksElement = doc.createElement("marks");
+            marksElement.appendChild(doc.createTextNode(String.valueOf(marks)));
+            resultElement.appendChild(marksElement);
+
+            // Write the content into XML file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlFile);
+            transformer.transform(source, result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -156,7 +190,65 @@ class Mcq extends JFrame implements ActionListener {
         return false;
     }
 
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == NEXT) {
+            if (check())
+                count = count + 1;
+            current++;
+            set();
+            if (current == 9) {
+                NEXT.setEnabled(false);
+                BOOKMARK.setText("Result");
+                calculateMarks();
+                updateResultInXml();
+            }
+        }
+        if (e.getSource() == PREVIOUS) {
+            if (check())
+                count = count + 1;
+            current--;
+            set();
+        }
+        if (e.getActionCommand().equals("Bookmark")) {
+            JButton bk = new JButton("Bookmark" + x);
+            bk.setBounds(480, 20 + 30 * x, 100, 30);
+            add(bk);
+            bk.addActionListener(this);
+            m[x] = current;
+            x++;
+            current++;
+            set();
+            if (current == 9)
+                BOOKMARK.setText("Result");
+            setVisible(false);
+            setVisible(true);
+        }
+        for (int i = 0, y = 1; i < x; i++, y++) {
+            if (e.getActionCommand().equals("Bookmark" + y)) {
+                if (check())
+                    count = count + 1;
+                now = current;
+                current = m[y];
+                set();
+                ((JButton) e.getSource()).setEnabled(false);
+                current = now;
+            }
+        }
+        if (e.getActionCommand().equals("Result")) {
+            if (check())
+                count = count + 1;
+            current++;
+            JOptionPane.showMessageDialog(this, "Correct answers: " + count);
+            System.exit(0);
+        }
+    }
+
+    private void calculateMarks() {
+        // Each correct answer gives 4 marks
+        marks = count * 4;
+    }
+
     public static void main(String s[]) {
-        new Mcq("MCQ for Data Science");
+        // Not needed as the instance is created in McqLogin
     }
 }
