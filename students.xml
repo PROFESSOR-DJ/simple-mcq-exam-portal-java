@@ -2,12 +2,12 @@
 <students>
     <student>
         <name>DHIRAAJ K V</name>
-        <email>720721104021@hicet.ac.in</email>
+        <email>example@mail.com</email>
         <password>DJ123</password>
     </student>
     <student>
         <name>Akhil</name>
-        <email>720721104001@hicet.ac.in</email>
+        <email>example2@mail.com</email>
         <password>AK456</password>
     </student>
 </students>
